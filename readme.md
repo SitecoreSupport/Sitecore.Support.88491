@@ -1,5 +1,5 @@
 # Sitecore.Support.88491
-Llink field value with special characters cannot be saved correctly in Experience Editor.
+Link field value with special characters cannot be saved correctly in Experience Editor.
 
 ## License  
 This patch is licensed under the [Sitecore Corporation A/S License for GitHub](https://github.com/sitecoresupport/Sitecore.Support.88491/blob/master/LICENSE).  

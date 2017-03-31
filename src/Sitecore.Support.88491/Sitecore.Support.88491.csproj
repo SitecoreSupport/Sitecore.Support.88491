@@ -72,6 +72,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Config\Include\zzz\Sitecore.Support.88491.config" />
+    <Content Include="sitecore\shell\client\Sitecore\ExperienceEditor\RibbonPageCode.js" />
+    <Content Include="sitecore\shell\client\Sitecore\ExperienceEditor\Sitecore.ExperienceEditor.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

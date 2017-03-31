@@ -1,28 +1,27 @@
 ﻿namespace Sitecore.Support.ExperienceEditor.Speak.Ribbon.Requests.SaveItem
 {
-    using Sitecore.Data;
-    using Sitecore.ExperienceEditor.Speak.Server.Responses;
-    using Sitecore.ExperienceEditor.Switchers;
-    using Sitecore.Pipelines;
-    using Sitecore.Pipelines.Save;
-    using Sitecore.Support.ExperienceEditor.Speak.Server.Requests;
-    using Sitecore.ExperienceEditor.Speak.Server.Contexts;
+  using Sitecore.Data;
+  using Sitecore.ExperienceEditor.Speak.Server.Responses;
+  using Sitecore.Pipelines;
+  using Sitecore.Pipelines.Save;
+  using Sitecore.Support.ExperienceEditor.Speak.Server.Requests;
+  using Sitecore.ExperienceEditor.Speak.Server.Contexts;
+  using Data.Items;
+  using Globalization;
 
-    public class CheckItemLock : PipelineProcessorRequest<PageContext>
+  public class CheckItemLock : PipelineProcessorRequest<PageContext>
+  {
+    public override PipelineProcessorResponseValue ProcessRequest()
     {
-        public override PipelineProcessorResponseValue ProcessRequest()
-        {
-            PipelineProcessorResponseValue value2 = new PipelineProcessorResponseValue();
-            Pipeline pipeline = PipelineFactory.GetPipeline("saveUI");
-            pipeline.ID = ShortID.Encode(ID.NewID);
-            SaveArgs saveArgs = base.RequestContext.GetSaveArgs();
-            using (new ClientDatabaseSwitcher(base.RequestContext.Item.Database))
-            {
-                pipeline.Start(saveArgs);
-                value2.AbortMessage = saveArgs.Error;
-                return value2;
-            }
-        }
+      base.RequestContext.ValidateContextItem();
+      PipelineProcessorResponseValue value2 = new PipelineProcessorResponseValue();
+      Item item = base.RequestContext.Item;
+      if (item.Locking.IsLocked() && !item.Locking.HasLock())
+      {
+        value2.AbortMessage = Translate.Text("Unable to save changes because the corresponding content has been locked by another user.");
+      }
+      return value2;
     }
+  }
 }
 

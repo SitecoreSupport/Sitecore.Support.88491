@@ -19,24 +19,22 @@
         {
         }
 
-        protected Response GenerateExceptionResponse(string errorMessage, Exception exception, string postScriptFunc = "")
+        protected Response GenerateExceptionResponse(string errorMessage, Exception exception)
         {
             Log.Error(exception.Message, exception, this);
             return new Response { 
                 Error = true,
-                ErrorMessage = errorMessage,
-                PostScriptFunc = postScriptFunc ?? string.Empty
+                ErrorMessage = errorMessage
             };
         }
 
         [Obsolete("This method is obsolete and will be removed in the next product version. Use GenerateExceptionResponse(string errorMessage, Exception exception, string postScriptFunc) instead.")]
-        protected Response GenerateExceptionResponse(string errorMessage, string logMessage, string postScriptFunc = "")
+        protected Response GenerateExceptionResponse(string errorMessage, string logMessage)
         {
             Log.Error(logMessage, this);
             return new Response { 
                 Error = true,
-                ErrorMessage = errorMessage,
-                PostScriptFunc = postScriptFunc ?? string.Empty
+                ErrorMessage = errorMessage
             };
         }
 
@@ -78,21 +76,19 @@
                 }
             }
             catch (FieldValidationException exception)
-            {
-                string errorMessage = string.Format("MY: {0} <a href='#' onclick='javascript:window.parent.ExperienceEditor.getContext().instance.ValidationUtil.selectChrome(\"{1}\", \"{2}\");window.parent.ExperienceEditor.getContext().instance.ValidationUtil.setChromesNotValid(\"{1}\", \"{2}\", \"\");' class='OptionTitle'>{3}</a>", new object[] { exception.Message, exception.FieldId, exception.FieldItemId, Translate.Text("Show error") });
-                string postScriptFunc = string.Format("window.parent.ExperienceEditor.getContext().instance.ValidationUtil.setChromesNotValid(\"{0}\", \"{1}\", \"\");", exception.FieldId, exception.FieldItemId);
-                response = this.GenerateExceptionResponse(errorMessage, exception, postScriptFunc);
+            {                
+                response = this.GenerateExceptionResponse(exception.Message, exception);
             }
             catch (ItemNotFoundException exception2)
             {
                 using (switcher2 = new LanguageSwitcher(WebUtility.ClientLanguage))
                 {
-                    response = this.GenerateExceptionResponse(Translate.Text("The item does not exist. It may have been deleted by another user."), exception2, "");
+                    response = this.GenerateExceptionResponse(Translate.Text("The item does not exist. It may have been deleted by another user."), exception2);
                 }
             }
             catch (Exception exception3)
             {
-                response = this.GenerateExceptionResponse(Translate.Text("MY:  An error occurred."), exception3, "");
+                response = this.GenerateExceptionResponse(Translate.Text("MY:  An error occurred."), exception3);
             }
             return response;
         }

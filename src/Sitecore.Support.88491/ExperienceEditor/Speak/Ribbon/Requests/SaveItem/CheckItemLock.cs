@@ -1,6 +1,8 @@
 ﻿namespace Sitecore.Support.ExperienceEditor.Speak.Ribbon.Requests.SaveItem
 {
+    using Sitecore.Globalization;
     using Sitecore.Data;
+    using Sitecore.Data.Items;
     using Sitecore.ExperienceEditor.Speak.Server.Responses;
     using Sitecore.ExperienceEditor.Switchers;
     using Sitecore.Pipelines;
@@ -12,17 +14,14 @@
     {
         public override PipelineProcessorResponseValue ProcessRequest()
         {
-            PipelineProcessorResponseValue value2 = new PipelineProcessorResponseValue();
-            Pipeline pipeline = PipelineFactory.GetPipeline("saveUI");
-            pipeline.ID = ShortID.Encode(ID.NewID);
-            SaveArgs saveArgs = base.RequestContext.GetSaveArgs();
-            using (new ClientDatabaseSwitcher(base.RequestContext.Item.Database))
+            base.RequestContext.ValidateContextItem();
+            PipelineProcessorResponseValue pipelineProcessorResponseValue = new PipelineProcessorResponseValue();
+            Item item = base.RequestContext.Item;
+            if (item.Locking.IsLocked() && !item.Locking.HasLock())
             {
-                pipeline.Start(saveArgs);
-                value2.AbortMessage = saveArgs.Error;
-                return value2;
+                pipelineProcessorResponseValue.AbortMessage = Translate.Text("Unable to save changes because the corresponding content has been locked by another user.");
             }
+            return pipelineProcessorResponseValue;
         }
     }
 }
-
